@@ -7,6 +7,7 @@ using Timer = System.Timers.Timer;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _timerText;
+    [SerializeField] private TextMeshProUGUI _scoreText;
     [SerializeField] private float _gameTime;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -31,6 +32,9 @@ public class GameManager : MonoBehaviour
             
             yield return null;
         }
+        
+        _scoreText.gameObject.SetActive(true);
+        _scoreText.text = SlimeSpawner.Instance.GetSlimesCount().ToString();
     }
 
     // Update is called once per frame

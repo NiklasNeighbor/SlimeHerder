@@ -74,10 +74,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3006e3720fb4fd64e925dcc5d1719dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxMovementDistance: 2
-  _minMovementDistance: 0.2
-  _destinationChangeTime: 5
+  _maxMovementDistance: 3
+  _minMovementDistance: 0.5
+  _destinationChangeTime: 4
   _movementForce: 15
+  _movementForceMultiplier: 1.035
 --- !u!58 &8453417928468819602
 CircleCollider2D:
   m_ObjectHideFlags: 0

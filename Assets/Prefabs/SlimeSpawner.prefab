@@ -44,6 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8e6c2218faf57942a61895b4fbf44f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slimesAmount: 10
-  _slimePrefab: {fileID: 0}
-  _spawnBorders: {x: -8, y: 8, z: -4, w: 4}
+  _slimesAmount: 15
+  _slimePrefab: {fileID: 5250637302995659103, guid: 2d5c9dfd1f5eff04db34cc7330c7a61f, type: 3}
+  _spawnBorders: {x: -8, y: 7, z: -4, w: 4}

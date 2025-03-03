@@ -11,6 +11,7 @@ public class SlimeController : MonoBehaviour
     [SerializeField] private float _destinationChangeTime;
 
     [SerializeField] private float _movementForce;
+    [SerializeField] private float _movementForceMultiplier = 1.01f;
 
     private Rigidbody2D _rigidbody;
     private Vector3 _destination;
@@ -23,6 +24,7 @@ public class SlimeController : MonoBehaviour
     void Start()
     {
         StartCoroutine(SetDestination());
+        StartCoroutine(SpeedUpCoroutine());
     }
 
     private IEnumerator SetDestination()
@@ -36,6 +38,15 @@ public class SlimeController : MonoBehaviour
             yield return new WaitForSeconds(_destinationChangeTime);
         }
         
+    }
+    
+    private IEnumerator SpeedUpCoroutine()
+    {
+        while (true)
+        {
+            _movementForce *= _movementForceMultiplier;
+            yield return new WaitForSeconds(1f);
+        }
     }
 
 
@@ -57,6 +68,7 @@ public class SlimeController : MonoBehaviour
     {
         if (other.collider.CompareTag("Enemy"))
         {
+            SlimeSpawner.Instance.RemoveSlime(gameObject);
             Destroy(gameObject);
         }
     }

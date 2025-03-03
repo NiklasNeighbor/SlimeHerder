@@ -1,10 +1,16 @@
+using System;
+using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class Predator : MonoBehaviour
 {
     public float DetectionRadius = 2f;
     public float PredatorSpeed = 1;
+    public float PredatorSpeedMultiplier = 1.02f;
     public LayerMask DefenseLayer;
+    private Collider2D lastSlimeCollider;
     Vector2 currentTargetDirection;
 
     float lastPathfindTime;
@@ -15,10 +21,25 @@ public class Predator : MonoBehaviour
     float ScareCooldown = 0.5f;
     Vector2 DebugWanderTarget;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private Rigidbody2D _rigidbody2D;
+
+    private void Awake()
+    {
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+    }
+
     void Start()
     {
-        
+        StartCoroutine(SpeedUpCoroutine());
+    }
+
+    private IEnumerator SpeedUpCoroutine()
+    {
+        while (true)
+        {
+            PredatorSpeed *= PredatorSpeedMultiplier;
+            yield return new WaitForSeconds(1f);
+        }
     }
 
     // Update is called once per frame
@@ -36,7 +57,18 @@ public class Predator : MonoBehaviour
     {
         Transform slimePosition = null;
         int layerMask = 1 << LayerMask.NameToLayer("Slime");
-        slimePosition = Physics2D.OverlapCircle(transform.position, DetectionRadius, layerMask)?.transform;
+        var colliders = Physics2D.OverlapCircleAll(transform.position, DetectionRadius, layerMask);
+
+        float smallestMagnitude = Mathf.Infinity;
+        foreach (var collider in colliders)
+        {
+            if ((collider.transform.position - transform.position).sqrMagnitude < smallestMagnitude)
+            {
+                slimePosition = collider.transform;
+                smallestMagnitude = (collider.transform.position - transform.position).sqrMagnitude;
+            }
+        }
+
 
         Transform defensePosition = null;
         defensePosition = Physics2D.OverlapCircle(transform.position, DetectionRadius, DefenseLayer)?.transform;
@@ -91,9 +123,9 @@ public class Predator : MonoBehaviour
 
     void HeadTowards(Vector2 target)
     {
-        if (target.magnitude > 0.1)
+        if (target.magnitude > 0.1 )
         {
-            transform.Translate(target.normalized * PredatorSpeed * Time.deltaTime);
+            _rigidbody2D.linearVelocity = target.normalized * PredatorSpeed * Time.deltaTime;
         }
     }
 
