@@ -4,11 +4,15 @@ public class Predator : MonoBehaviour
 {
     public float DetectionRadius = 2f;
     public float PredatorSpeed = 1;
+    public LayerMask DefenseLayer;
     Vector2 currentTargetDirection;
 
     float lastPathfindTime;
     float PathCooldown = 2;
     float PathCooldownVariety;
+
+    float LastScared;
+    float ScareCooldown = 0.5f;
     Vector2 DebugWanderTarget;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -33,19 +37,39 @@ public class Predator : MonoBehaviour
         Transform slimePosition = null;
         int layerMask = 1 << LayerMask.NameToLayer("Slime");
         slimePosition = Physics2D.OverlapCircle(transform.position, DetectionRadius, layerMask)?.transform;
+
+        Transform defensePosition = null;
+        defensePosition = Physics2D.OverlapCircle(transform.position, DetectionRadius, DefenseLayer)?.transform;
         //Debug.Log(slimePosition);
 
-        if (slimePosition != null)
+        if (defensePosition != null)
         {
-            currentTargetDirection = slimePosition.position - transform.position;
-            Debug.DrawLine(transform.position, slimePosition.position, Color.red);
-            HeadTowards(currentTargetDirection);
-        } else
+            currentTargetDirection = defensePosition.position - transform.position;
+            Debug.DrawLine(transform.position, defensePosition.position, Color.red);
+            HeadTowards(-currentTargetDirection);
+            LastScared = Time.time;
+        }
+        else
         {
-            Wander();
+            if(Time.time > LastScared + ScareCooldown)
+            {
+                if (slimePosition != null)
+                {
+                    currentTargetDirection = slimePosition.position - transform.position;
+                    Debug.DrawLine(transform.position, slimePosition.position, Color.red);
+                    HeadTowards(currentTargetDirection);
+                }
+                else
+                {
+                    Wander();
+                }
+            } else
+            {
+                HeadTowards(-currentTargetDirection);
+            }
         }
 
-        
+
     }
 
     void Wander()
